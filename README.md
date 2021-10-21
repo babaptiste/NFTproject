@@ -31,6 +31,9 @@
 ```bash
 $ npm install
 ```
+## Setup the DB postgreSQL
+
+Go to PgAdmin and create a DB named ```JS```.
 
 ## Running the app
 
