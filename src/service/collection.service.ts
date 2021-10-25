@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Collection } from 'src/entity/collection.entity';
-import {Nft} from 'src/entity/nft.entity'
+import { Nft } from 'src/entity/nft.entity'
 
 @Injectable()
 export class CollectionService {

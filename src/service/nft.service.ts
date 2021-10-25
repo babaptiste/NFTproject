@@ -4,7 +4,7 @@ import { Nft } from "src/entity/nft.entity";
 @Injectable()
 export class NftService {
     constructor(
-        @Inject('NFTS_REPOSITORY')
+        @Inject('NFT_REPOSITORY')
         private nftsRepository: typeof Nft,
       ) {}
 
