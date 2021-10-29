@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { UpdateNftDto } from "src/dto/update-nft-dto";
 import { Nft } from "src/entity/nft.entity";
+import {UpdateNftDto} from 'src/dto/update-nft-dto'
 
 @Injectable()
 export class NftService {
@@ -16,8 +16,9 @@ export class NftService {
                 image: createNftDto.image,
                 price: createNftDto.price,
                 status: createNftDto.status,
-                history: createNftDto.history,
+                history: [createNftDto.history],
                 belongToCollection: createNftDto.belongToCollection,
+                rating : createNftDto.rating,
             });
     }
 
@@ -41,19 +42,19 @@ export class NftService {
     }
 
 
-    async updateOwners(UpdateNftDto) : Promise<Nft> {
-        var tmp = history + ' / ' + UpdateNftDto.history
-        await this.nftsRepository.update({ history: tmp},
-            {
-               where: {
-                   name: UpdateNftDto.name
-               }
-            });
-        return this.nftsRepository.findOne({
+    async updateOwners(updateNftDto) : Promise<Nft> {
+        return await this.nftsRepository.findOne({
             where: {
-                name: UpdateNftDto.name
+                name: updateNftDto.name
             }
-        });
+        }).then((curr) => {
+            if (curr.history == null)
+            {
+                curr.history = []
+            }
+            curr.history.push(updateNftDto.owner)
+            return curr.save()
+        })
     }
     // TODO history of owner : add last owner to the list
 
@@ -61,12 +62,12 @@ export class NftService {
         await this.nftsRepository.update({ rating: UpdateRatingDto.rating},
             {
                 where: {
-                    email: UpdateRatingDto.rating
+                    id: UpdateRatingDto.id
                 }
             });
             return this.nftsRepository.findOne({
                 where: {
-                    email: UpdateRatingDto.email
+                    id: UpdateRatingDto.id
                 }
             })
     }

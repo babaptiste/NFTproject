@@ -8,5 +8,15 @@ export class CreateCollectionDto {
     name: string;
 
     @ApiProperty()
-    averageRating: number;
+    logo: string;
+
+
+    @ApiProperty()
+    status: string;
+
+    @ApiProperty()
+    time: Date;
+
+    @ApiProperty()
+    rating: string;
 }

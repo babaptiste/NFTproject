@@ -1,4 +1,4 @@
-import { Table, Column, Model, Unique, AllowNull, Is, IsEmail, ForeignKey } from 'sequelize-typescript';
+import { DataType,Table, Column, Model, Unique, AllowNull, Is, IsEmail, ForeignKey } from 'sequelize-typescript';
 
 @Table
 export class Nft extends Model {
@@ -16,8 +16,8 @@ export class Nft extends Model {
   @Column
   status: string;
 
-  @Column
-  history: string;
+  @Column({type: DataType.ARRAY(DataType.STRING)})
+  history: Array<string>;
 
   @Column
   belongToCollection: string;

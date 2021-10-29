@@ -18,6 +18,6 @@ export class Collection extends Model {
 
   @AllowNull(true)
   @Column
-  rating: number;
+  rating: string;
 
 }

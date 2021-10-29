@@ -19,15 +19,14 @@ export class CreateNftDto {
     @ApiProperty()
     status: string;
 
-    @IsNotEmpty()
     @ApiProperty()
-    history: string;
+    history: Array<string>;
 
     @IsNotEmpty()
     @ApiProperty()
     belongToCollection: string;
 
-
+    @IsNotEmpty()
     @ApiProperty()
     rating: number;
 }
