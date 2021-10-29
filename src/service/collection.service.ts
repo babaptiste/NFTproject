@@ -15,6 +15,10 @@ export class CollectionService {
     return this.CollectionRepository.create({ name: name });
   }
 
+  async findAll(): Promise<Collection[]> {
+    return this.CollectionRepository.findAll<Collection>();
+  }
+
   async updateStatus(name,status) : Promise<Collection> {
     await this.CollectionRepository.update({ status: status },
       {
@@ -29,7 +33,7 @@ export class CollectionService {
     });
   }
 
-  async computeNftRating(collectionName: string , name : string) : Promise<Collection>{
+  async computeNftRating(collectionName) : Promise<number> {
     var list = await this.NftRepository.findAll({
         where: {
             belongToCollection : collectionName
@@ -44,17 +48,21 @@ export class CollectionService {
     });
     var moy = total / i
 
-    await this.CollectionRepository.update({ rating : moy},
+    return moy
+    
+    /*await this.CollectionRepository.update({ rating : moy},
         {
             where: {
-                name : name
+                name : collectionName
             }
         })
 
     return this.CollectionRepository.findOne({
         where: {
-            name : name
+            name : collectionName
         }
-    });
+    });*/
   }
+
+
 }

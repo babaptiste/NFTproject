@@ -1,4 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
+import { UpdateNftDto } from "src/dto/update-nft-dto";
 import { Nft } from "src/entity/nft.entity";
 
 @Injectable()
@@ -20,7 +21,10 @@ export class NftService {
             });
     }
 
- 
+    async findAll(): Promise<Nft[]> 
+    {
+        return this.nftsRepository.findAll<Nft>();
+    }
 
     async addMember(UpdateNftDto, collectionName) : Promise<Nft> {
         await this.nftsRepository.update({ belongToCollection: collectionName},
@@ -52,4 +56,18 @@ export class NftService {
         });
     }
     // TODO history of owner : add last owner to the list
+
+    async addRating(UpdateRatingDto) : Promise<Nft> {
+        await this.nftsRepository.update({ rating: UpdateRatingDto.rating},
+            {
+                where: {
+                    email: UpdateRatingDto.rating
+                }
+            });
+            return this.nftsRepository.findOne({
+                where: {
+                    email: UpdateRatingDto.email
+                }
+            })
+    }
 }

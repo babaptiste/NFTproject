@@ -11,14 +11,21 @@ import { CollectionService } from 'src/service/collection.service';
 export class CollectionController {
 constructor(private collectionService: CollectionService) {}
 
-  @Post()
-  createCollection(@Body() createNftDto : CreateCollectionDto) : Promise<Collection> {
-      return this.collectionService.createCollection(createNftDto);
+  @Get()
+  findAll() : Promise<Collection[]>{
+    return this.collectionService.findAll();
   }
 
+  @ApiParam({name: 'name', required: true, description: 'Collection\'s name'})
+  @Post('/:name')
+  createCollection(@Param() params) : Promise<Collection> {
+      return this.collectionService.createCollection(params.name);
+  }
+  
+  @ApiParam({name: 'name', required: true, description: 'Collection\'s name'})
   @Get('/rating')
   getRating(@Param() params)
   {
-      return this.collectionService.computeNftRating(params.collectionName, params.name);
+      return this.collectionService.computeNftRating(params.collectionName);
   }
 }
