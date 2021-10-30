@@ -1,5 +1,7 @@
-import { Controller, Get, HttpCode, Post, Req, Body, Param, Put } from '@nestjs/common';
+import { Controller, Get, HttpCode, Post, Req, Body, Param, Put, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateUserDto } from 'src/dto/create-user.dto';
 import { UpdateUserDto } from 'src/dto/update-user.dto';
 import { User } from 'src/entity/user.entity';
@@ -15,11 +17,13 @@ constructor(private userService: UsersService) {}
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   findAll() : Promise<User[]>{
     return this.userService.findAll();
   }
 
   @Put('/team')
+  @UseGuards(JwtAuthGuard)
   addMember(@Body() updateUserDto: UpdateUserDto) : Promise<User>{
       return this.userService.addMember(updateUserDto);
   }

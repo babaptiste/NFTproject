@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
 import { CreateUserDto } from "src/dto/create-user.dto";
 import { User } from "src/entity/user.entity";
 
@@ -10,6 +10,29 @@ export class UsersService {
       ) {}
 
     async register(createUserDto): Promise<User> {
+        const { Op } = require("sequelize");
+        const userInDb = await this.usersRepository.findOne({ 
+            where: { 
+   
+                [Op.or]: [
+                    {
+                        name: 
+                        {
+                            [Op.eq]: createUserDto.name
+                        }
+                    }, 
+                    {
+                        email: 
+                        {
+                            [Op.eq]: createUserDto.email
+                        }
+                    }
+                ]
+            } 
+        });
+        if (userInDb) {
+            throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);    
+        }
         return await this.usersRepository.create(
             {
                 address: createUserDto.address,
