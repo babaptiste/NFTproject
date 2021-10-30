@@ -23,8 +23,8 @@ export class UsersService {
         return this.usersRepository.findAll<User>();
     }
 
-    async findOne(username: string): Promise<User | undefined> {
-        return (await this.usersRepository.findAll<User>()).find(user => user.name === username);
+    async findOne(email: string): Promise<User | undefined> {
+        return (await this.usersRepository.findAll<User>()).find(user => user.email === email);
       }
 
     async addMember(UpdateUserDto) : Promise<User> {
