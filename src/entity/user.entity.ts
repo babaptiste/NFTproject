@@ -1,5 +1,9 @@
 import { Table, Column, Model, Unique, AllowNull, Is, IsEmail, ForeignKey } from 'sequelize-typescript';
+import { DataTypes } from 'sequelize/types';
+import Sequelize from 'sequelize/types/lib/sequelize';
+import { Role } from 'src/role/role.enum';
 import { Team } from './team.entity';
+import { DataType } from 'sequelize-typescript';
 
 @Table
 export class User extends Model {
@@ -25,5 +29,8 @@ export class User extends Model {
   @ForeignKey(() => Team)
   @Column
   teamId: number;
+
+  @Column(DataType.ENUM("user", "admin"))
+  role: string
 
 }

@@ -6,6 +6,7 @@ import {UpdateNftDto} from 'src/dto/update-nft-dto'
 import { NftService } from 'src/service/nft.service';
 import { CreateNftDto } from 'src/dto/create-nft-dto';
 import { UpdateRatingDto } from 'src/dto/update-rating-dto';
+import { SellNftDto } from 'src/dto/sell-nft-dto';
 
 @ApiTags('nft')
 @Controller('nft')
@@ -28,9 +29,20 @@ constructor(private nftService: NftService) {}
       return this.nftService.updateOwners(updateNftDto);
   }
 
+  @Put('/sell')
+  sellNft(@Body() sellNftDto: SellNftDto) : Promise<Nft>
+  {
+    return this.nftService.sellNft(sellNftDto);
+  }
+
   @Put('/rating')
   addRating(@Body() updateRatingDto : UpdateRatingDto) : Promise<Nft>
   {
       return this.nftService.addRating(updateRatingDto);
+  }
+
+  @Get('/mostrated')
+  findMostRated(): Promise<Nft>{
+    return this.nftService.findMostRated();
   }
 }
