@@ -1,9 +1,10 @@
-import { Inject, Injectable, Logger } from "@nestjs/common";
+import { HttpException, HttpStatus, Inject, Injectable, Logger } from "@nestjs/common";
 import { Nft } from "src/entity/nft.entity";
 import { UpdateNftDto } from 'src/dto/update-nft-dto'
 import { Team } from "src/entity/team.entity";
 import { User } from "src/entity/user.entity";
 import { Collection } from "src/entity/collection.entity";
+import { validate } from "class-validator";
 
 
 @Injectable()
@@ -97,8 +98,76 @@ export class NftService {
         return l[l.length - 1]
     }
 
+    async validate(sellNftDto){
+        /* Nft */        
+        try {
+            var nft = await this.nftsRepository.findOne({ where: { id: sellNftDto.id } })
+        } catch (error) {
+            throw new HttpException('Nft doesn\'t exist', HttpStatus.BAD_REQUEST);
+        }
+        if (nft.history == [] || nft.history == null || nft.price == null)
+            throw new HttpException('Nft doesn\'t belong to anyone', HttpStatus.BAD_REQUEST);
+        
+        if (nft.belongToCollection == null)
+            throw new HttpException('Nft doesn\'t belong to a collection', HttpStatus.BAD_REQUEST);
+          
+        /* Users */
+        var oldUser = await this.usersRepository.findOne({
+            where: {
+                name: nft.history[nft.history.length - 1]
+            }
+        })
+        if (oldUser == null)
+            throw new HttpException('Nft doesn\'t belong to a registered user', HttpStatus.BAD_REQUEST);
+        else if (oldUser.teamId == null)
+            throw new HttpException('Nft doesn\'t belong to a registered user', HttpStatus.BAD_REQUEST);
+
+        var newUser = await this.usersRepository.findOne({
+            where: {
+                name: sellNftDto.owner
+            }
+        })
+
+        if (newUser == null)
+            throw new HttpException('Nft doesn\'t belong to a registered user', HttpStatus.BAD_REQUEST);
+
+
+        /* Collection */
+
+        var collection = this.collectionRepository.findOne({
+            where: {
+                name: nft.belongToCollection
+            }
+        })
+        if (collection == null)
+            throw new HttpException('Nft\'s collection doesn\'t exist', HttpStatus.BAD_REQUEST);
+
+    
+        /* Team */
+        
+        var oldTeam = this.teamsRepository.findOne({
+            where: {
+                id: oldUser.teamId
+            }
+        })
+
+        if (oldTeam == null || (await oldTeam).balance == null)
+            throw new HttpException('Previous owner\'s team doesn\'t exist', HttpStatus.BAD_REQUEST);
+            
+        
+        var newTeam = this.teamsRepository.findOne({
+            where: {
+                id: newUser.teamId
+            }
+        })
+
+        if (newTeam == null || (await newTeam).balance == null)
+            throw new HttpException('New owner\'s team doesn\'t exist', HttpStatus.BAD_REQUEST);
+    }
+
     async sellNft(sellNftDto): Promise<Nft> {
 
+        validate(sellNftDto);
         /* Find first owner team and Update balance and update number of sales in team + collection*/
         
         var nft = await this.nftsRepository.findOne({ where: { id: sellNftDto.id } })
@@ -169,15 +238,17 @@ export class NftService {
               id: newUser.teamId
           }
         });
-        
-        await this.nftsRepository.update({date: Date.now()},
+               
+        await this.nftsRepository.update({ date: Date.now() },
         {
             where: {
                 id: sellNftDto.id
             } 
         });
 
-        this.logger.log("New sell at: " + Date.now() + "from " + oldUser.name + " to " + newUser.name + " of NFT n° " + nft.id)
+        var date = new Date()
+        var datetext = date.toTimeString()
+        this.logger.log("New sell at: " + datetext + " from " + oldUser.name + " to " + newUser.name + " of NFT n° " + nft.id)
         return this.nftsRepository.findOne({
         where: {
             id: sellNftDto.id
