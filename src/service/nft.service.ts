@@ -238,7 +238,14 @@ export class NftService {
               id: newUser.teamId
           }
         });
-        
+               
+        await this.nftsRepository.update({ date: Date.now() },
+        {
+            where: {
+                id: sellNftDto.id
+            } 
+        });
+
         var date = new Date()
         var datetext = date.toTimeString()
         this.logger.log("New sell at: " + datetext + " from " + oldUser.name + " to " + newUser.name + " of NFT n° " + nft.id)
@@ -247,5 +254,27 @@ export class NftService {
             id: sellNftDto.id
         }
         });        
+    }
+
+    async getLastSells(number): Promise<Nft[]> {
+        return await this.nftsRepository.findAll({
+            limit: number,
+            order:[
+                ['date', 'DESC']
+            ]
+        })
+    }
+
+    async getOwner(owner): Promise<Nft[]> {
+        const { Op } = require("sequelize");
+        var nfts  = await this.nftsRepository.findAll();
+        var arr = []
+        nfts.forEach(element => {
+            if (element.history[element.history.length - 1] ==  owner)
+            {
+                arr.push(element);
+            }
+        });
+        return arr;
     }
 }

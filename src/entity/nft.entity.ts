@@ -25,6 +25,8 @@ export class Nft extends Model {
   @Column
   rating: number;
 
+  @Column
+  date: Date;
 
 
 }
