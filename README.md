@@ -60,6 +60,9 @@ host    replication     all             ::1/128                 trust
 
 3. Restart postgresSQL service and it should run just fine
 
+## Roles feature
+We implemented the `RolesGuard` decorator but we still have issues. You can see the problem by uncomment the lines 34-35 in teams.controller.ts (and comment line 33).
+
 ## Running the app
 
 ```bash

@@ -11,6 +11,7 @@ export class UsersService {
 
     private readonly logger = new Logger(UsersService.name);
 
+    // Register a user.
     async register(createUserDto): Promise<User> {
         const { Op } = require("sequelize");
         const userInDb = await this.usersRepository.findOne({ 
@@ -50,14 +51,17 @@ export class UsersService {
             });
     }
 
+    // Get all users.
     async findAll(): Promise<User[]> {
         return this.usersRepository.findAll<User>();
     }
 
+    // Get a user.
     async findOne(username: string): Promise<User | undefined> {
         return (await this.usersRepository.findAll<User>()).find(user => user.name === username);
       }
 
+    // Add a user to a team.
     async addMember(UpdateUserDto) : Promise<User> {
         await this.usersRepository.update({ teamId: UpdateUserDto.teamId },
             {
@@ -72,6 +76,7 @@ export class UsersService {
         });
     }
 
+    // Add a role to a user.
     async addRole(UpdateRoleDto): Promise<User> {
         await this.usersRepository.update({ roles: UpdateRoleDto.roles },
             {
