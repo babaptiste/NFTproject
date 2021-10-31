@@ -30,9 +30,6 @@ export class User extends Model {
   @Column
   teamId: number;
 
-  /*@Column(DataType.ENUM("user", "admin"))
-  role: string*/
-
   @Column({ type: DataType.ENUM, values: ["user", "admin"] })
   roles: Role
 }

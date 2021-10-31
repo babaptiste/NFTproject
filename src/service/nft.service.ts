@@ -1,9 +1,10 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import { Nft } from "src/entity/nft.entity";
 import { UpdateNftDto } from 'src/dto/update-nft-dto'
 import { Team } from "src/entity/team.entity";
 import { User } from "src/entity/user.entity";
 import { Collection } from "src/entity/collection.entity";
+
 
 @Injectable()
 export class NftService {
@@ -18,6 +19,8 @@ export class NftService {
         private collectionRepository: typeof Collection
       ) {}
 
+    private readonly logger = new Logger(NftService.name);
+
     async register(createNftDto): Promise<Nft> {
         return await this.nftsRepository.create(
             {
@@ -31,10 +34,13 @@ export class NftService {
             });
     }
 
+    /* Returns all Nfts */
     async findAll(): Promise<Nft[]> 
     {
         return this.nftsRepository.findAll<Nft>();
     }
+
+    /* Add a Nft To a collection */
 
     async addMember(UpdateNftDto, collectionName) : Promise<Nft> {
         await this.nftsRepository.update({ belongToCollection: collectionName},
@@ -50,6 +56,7 @@ export class NftService {
         });
     }
 
+    /* Add a new owner to the history list */
     async updateOwners(updateNftDto): Promise<Nft> {
         const foundItem = await this.nftsRepository.findOne({ where: { id: updateNftDto.id } })
         var newhistory = foundItem.history
@@ -78,6 +85,8 @@ export class NftService {
             })
     }
 
+    /* Find the nft with the highest rating*/
+
     async findMostRated(): Promise<Nft> {
         var l = await this.nftsRepository.findAll<Nft>();
 
@@ -91,6 +100,7 @@ export class NftService {
     async sellNft(sellNftDto): Promise<Nft> {
 
         /* Find first owner team and Update balance and update number of sales in team + collection*/
+        
         var nft = await this.nftsRepository.findOne({ where: { id: sellNftDto.id } })
         var oldUser = await this.usersRepository.findOne({
             where: {
@@ -109,8 +119,6 @@ export class NftService {
                 name: nft.belongToCollection
             }
         })
-
-
 
         var newBalance = (await oldTeam).balance
         newBalance === null ? 1 : newBalance + nft.price
@@ -162,6 +170,7 @@ export class NftService {
           }
         });
         
+        this.logger.log("New sell at: " + Date.now() + "from " + oldUser.name + " to " + newUser.name + " of NFT n° " + nft.id)
         return this.nftsRepository.findOne({
         where: {
             id: sellNftDto.id

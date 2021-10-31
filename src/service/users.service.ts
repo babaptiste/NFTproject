@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Inject, Injectable, Logger } from "@nestjs/common";
 import { CreateUserDto } from "src/dto/create-user.dto";
 import { User } from "src/entity/user.entity";
 
@@ -8,6 +8,8 @@ export class UsersService {
         @Inject('USERS_REPOSITORY')
         private usersRepository: typeof User
       ) {}
+
+    private readonly logger = new Logger(UsersService.name);
 
     async register(createUserDto): Promise<User> {
         const { Op } = require("sequelize");
@@ -33,12 +35,18 @@ export class UsersService {
         if (userInDb) {
             throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);    
         }
+
+        var date = new Date()
+        var datetext = date.toTimeString()
+        this.logger.log("New User created at " + datetext + " : " + createUserDto.email + " as a(n) " + createUserDto.roles);
+
         return await this.usersRepository.create(
             {
                 address: createUserDto.address,
                 name: createUserDto.name,
                 email: createUserDto.email,
-                password: Math.random().toString(36).slice(2)
+                password: Math.random().toString(36).slice(2),
+                roles: createUserDto.roles
             });
     }
 
