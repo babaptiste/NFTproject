@@ -1,4 +1,4 @@
-import { Table, Column, Model, Unique, AllowNull, Is, IsEmail, ForeignKey } from 'sequelize-typescript';
+import { Table, Column, Model, Unique, AllowNull, Is, IsEmail, ForeignKey, Default} from 'sequelize-typescript';
 
 @Table
 export class Collection extends Model {
@@ -20,6 +20,7 @@ export class Collection extends Model {
   @Column
   rating: string;
 
+  @Default(0)
   @Column
   numberOfSales: number;
 }
