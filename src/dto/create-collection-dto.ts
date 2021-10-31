@@ -19,4 +19,7 @@ export class CreateCollectionDto {
 
     @ApiProperty()
     rating: string;
+
+    @ApiProperty()
+    numberOfSales: number;
 }

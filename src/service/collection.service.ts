@@ -16,7 +16,8 @@ export class CollectionService {
       logo: createCollectionDto.logo,
       status: createCollectionDto.status,
       time : createCollectionDto.time,
-      rating : createCollectionDto.rating });
+      rating : createCollectionDto.rating,
+      numberOfSales : createCollectionDto.numberOfSales });
   }
 
   async findAll(): Promise<Collection[]> {
