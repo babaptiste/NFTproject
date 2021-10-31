@@ -1,5 +1,5 @@
 import { Controller, Get, HttpCode, Post, Req, Body, Param, Put } from '@nestjs/common';
-import { ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { IntegerDataType } from 'sequelize/types';
 import { Nft } from 'src/entity/nft.entity';
 import {UpdateNftDto} from 'src/dto/update-nft-dto'

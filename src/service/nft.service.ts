@@ -98,76 +98,83 @@ export class NftService {
         return l[l.length - 1]
     }
 
-    async validate(sellNftDto){
-        /* Nft */        
+    /* Sell a nft */
+    async sellNft(sellNftDto): Promise<Nft> {
+
+
+        /* Validate that every requirements for the sell is ok */
         try {
-            var nft = await this.nftsRepository.findOne({ where: { id: sellNftDto.id } })
+            var nft_ = await this.nftsRepository.findOne({ where: { id: sellNftDto.id } })
         } catch (error) {
             throw new HttpException('Nft doesn\'t exist', HttpStatus.BAD_REQUEST);
         }
-        if (nft.history == [] || nft.history == null || nft.price == null)
+        if (nft_.history == [] || nft_.history == null || nft_.price == null)
             throw new HttpException('Nft doesn\'t belong to anyone', HttpStatus.BAD_REQUEST);
         
-        if (nft.belongToCollection == null)
+        if (nft_.belongToCollection == null)
             throw new HttpException('Nft doesn\'t belong to a collection', HttpStatus.BAD_REQUEST);
           
         /* Users */
-        var oldUser = await this.usersRepository.findOne({
+        var oldUser_ = await this.usersRepository.findOne({
             where: {
-                name: nft.history[nft.history.length - 1]
+                name: nft_.history[nft_.history.length - 1]
             }
         })
-        if (oldUser == null)
+        if (oldUser_ == null)
             throw new HttpException('Nft doesn\'t belong to a registered user', HttpStatus.BAD_REQUEST);
-        else if (oldUser.teamId == null)
+        else if (oldUser_.teamId == null)
             throw new HttpException('Nft doesn\'t belong to a registered user', HttpStatus.BAD_REQUEST);
 
-        var newUser = await this.usersRepository.findOne({
+        var newUser_ = await this.usersRepository.findOne({
             where: {
                 name: sellNftDto.owner
             }
         })
 
-        if (newUser == null)
+        if (newUser_ == null)
             throw new HttpException('Nft doesn\'t belong to a registered user', HttpStatus.BAD_REQUEST);
 
 
         /* Collection */
 
-        var collection = this.collectionRepository.findOne({
+        var collection_ = await this.collectionRepository.findOne({
             where: {
-                name: nft.belongToCollection
+                name: nft_.belongToCollection
             }
         })
-        if (collection == null)
+
+        console.log(collection_);
+
+        if (collection_ == null)
             throw new HttpException('Nft\'s collection doesn\'t exist', HttpStatus.BAD_REQUEST);
 
     
         /* Team */
         
-        var oldTeam = this.teamsRepository.findOne({
+        var oldTeam_ = await this.teamsRepository.findOne({
             where: {
-                id: oldUser.teamId
+                id: oldUser_.teamId
             }
         })
 
-        if (oldTeam == null || (await oldTeam).balance == null)
+        if (oldTeam_ == null || (await oldTeam_).balance == null)
             throw new HttpException('Previous owner\'s team doesn\'t exist', HttpStatus.BAD_REQUEST);
             
         
-        var newTeam = this.teamsRepository.findOne({
+        var newTeam_ = await this.teamsRepository.findOne({
             where: {
-                id: newUser.teamId
+                id: newUser_.teamId
             }
         })
 
-        if (newTeam == null || (await newTeam).balance == null)
+        if (newTeam_ == null || (await newTeam_).balance == null)
             throw new HttpException('New owner\'s team doesn\'t exist', HttpStatus.BAD_REQUEST);
-    }
+        
+        /* ------------------------------------------------------------------------------------- */
+         
+        
 
-    async sellNft(sellNftDto): Promise<Nft> {
 
-        validate(sellNftDto);
         /* Find first owner team and Update balance and update number of sales in team + collection*/
         
         var nft = await this.nftsRepository.findOne({ where: { id: sellNftDto.id } })
@@ -189,11 +196,9 @@ export class NftService {
             }
         })
 
-        var newBalance = (await oldTeam).balance
-        newBalance === null ? 1 : newBalance + nft.price
-        
-        var newSalesnumber = (await oldTeam).numberOfSales
-        newSalesnumber === null ? 1 : newSalesnumber + 1
+        var newBalance = (await oldTeam).balance + nft.price
+
+        var newSalesnumber = (await oldTeam).numberOfSales + 1
 
         await this.teamsRepository.update({ balance: newBalance, numberOfSales: newSalesnumber},
         {

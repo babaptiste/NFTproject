@@ -11,6 +11,7 @@ export class CollectionService {
     private NftRepository: typeof Nft
   ) {}
 
+  /* Create a new collection */
   async createCollection(createCollectionDto): Promise<Collection> {
     return this.CollectionRepository.create({ name: createCollectionDto.name,
       logo: createCollectionDto.logo,
@@ -20,10 +21,12 @@ export class CollectionService {
       numberOfSales : createCollectionDto.numberOfSales });
   }
 
+  /* Get all existing collections*/
   async findAll(): Promise<Collection[]> {
     return this.CollectionRepository.findAll<Collection>();
   }
 
+  /* Change collection's status */
   async updateStatus(name,status) : Promise<Collection> {
     await this.CollectionRepository.update({ status: status },
       {
@@ -38,6 +41,7 @@ export class CollectionService {
     });
   }
 
+  /* Get the average rating of a collection */
   async computeNftRating(collectionName) : Promise<Collection> {
     var list = await this.NftRepository.findAll({
         where: {
@@ -72,6 +76,7 @@ export class CollectionService {
       });
   }
 
+  /* Get the best selling collection among all colletions */
   async findBestSeller(): Promise<Collection> {
     var l = await this.CollectionRepository.findAll<Collection>();
 

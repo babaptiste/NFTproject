@@ -18,13 +18,13 @@ constructor(private userService: UsersService) {}
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   findAll() : Promise<User[]>{
     return this.userService.findAll();
   }
 
   @Put('/team')
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   addMember(@Body() updateUserDto: UpdateUserDto) : Promise<User>{
       return this.userService.addMember(updateUserDto);
   }

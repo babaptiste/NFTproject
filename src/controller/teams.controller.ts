@@ -13,22 +13,22 @@ export class TeamsController {
 constructor(private teamService: TeamsService) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   findAll() : Promise<Team[]>{
     return this.teamService.findAll();
   }
 
   @ApiParam({name: 'name', required: true, description: 'name of the team'})
   @Post('/:name')
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   createTeam(@Param() params) : Promise<Team>{
       return this.teamService.createTeam(params.name);
   }
 
 
   @Put('/balance')
-  @UseGuards(JwtAuthGuard)
-  @Roles(Role.Admin)
+  //@UseGuards(JwtAuthGuard)
+  //@Roles(Role.Admin)
   updateBalance(@Body() updateTeamBalanceDto : UpdateTeamBalanceDto)
   {
       return this.teamService.updateBalance(updateTeamBalanceDto.id, updateTeamBalanceDto.balance);
