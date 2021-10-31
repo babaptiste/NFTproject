@@ -63,6 +63,9 @@ host    replication     all             ::1/128                 trust
 ## Roles feature
 We implemented the `RolesGuard` decorator but we still have issues. You can see the problem by uncomment the lines 34-35 in teams.controller.ts (and comment line 33).
 
+## Make a request
+To make request, you need to register first and then, inform the access token in the Header (Bearer Token). That's why, we use Postman to test all the requests.
+
 ## Running the app
 
 ```bash
