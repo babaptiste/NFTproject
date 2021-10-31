@@ -1,0 +1,5 @@
+Choix des technologies:
+
+postgresql : Base de donnée que l'on connais, relationnelle donc adaptée à ce qui était demandé.
+Sequelize : Simplicité d'utilisation, compatible avec postgreSQL
+JWT
