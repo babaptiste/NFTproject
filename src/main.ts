@@ -1,5 +1,5 @@
 import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalPipes(new ValidationPipe())
-
+  
   const config = new DocumentBuilder()
     .setTitle('NFT API')
     .setDescription('The NFT API made by :\n- Corentin KELOGHLANIAN\n- Baptiste MONFRAY\n- Mathieu BILLY\n- Robin ADJANOHOUN')

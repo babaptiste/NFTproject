@@ -29,4 +29,14 @@ export class TeamsService {
         }
     });
   }
+
+  async findBestSeller(): Promise<Team> {
+    var l = await this.teamsRepository.findAll<Team>();
+
+    l.sort(function (a, b) {
+      return a.numberOfSales - b.numberOfSales;
+    })
+
+    return l[l.length - 1]
+  }
 }
