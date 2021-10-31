@@ -70,4 +70,14 @@ export class CollectionService {
           }
       });
   }
+
+  async findBestSeller(): Promise<Collection> {
+    var l = await this.CollectionRepository.findAll<Collection>();
+
+    l.sort(function (a, b) {
+      return a.numberOfSales - b.numberOfSales;
+    })
+
+    return l[l.length - 1]
+  }
 }

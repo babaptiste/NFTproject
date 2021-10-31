@@ -10,4 +10,6 @@ export class Team extends Model {
   @Column
   balance: number;
 
+  @Column
+  numberOfSales: number;
 }

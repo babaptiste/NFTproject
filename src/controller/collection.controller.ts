@@ -26,4 +26,9 @@ constructor(private collectionService: CollectionService) {}
   {
       return this.collectionService.computeNftRating(params.name);
   }
+
+  @Get('/bestseller')
+  getbestseller() : Promise<Collection> {
+    return this.collectionService.findBestSeller();
+  }
 }

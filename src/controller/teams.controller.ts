@@ -24,9 +24,14 @@ constructor(private teamService: TeamsService) {}
 
 
   @Put('/balance')
-  //@Roles(Role.Admin)
+  @Roles(Role.Admin)
   updateBalance(@Body() updateTeamBalanceDto : UpdateTeamBalanceDto)
   {
       return this.teamService.updateBalance(updateTeamBalanceDto.id, updateTeamBalanceDto.balance);
+  }
+
+  @Get('/bestseller')
+  bestSellerTeam() : Promise<Team>{
+    return this.teamService.findBestSeller();
   }
 }

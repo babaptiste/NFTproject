@@ -7,6 +7,7 @@ import { teamsProviders } from 'src/provider/teams.providers';
 import { TeamsModule } from './teams.module';
 import { UsersModule } from './users.module';
 import { usersProviders } from 'src/provider/users.providers';
+import { collectionProviders } from 'src/provider/collection.providers';
 
 @Module({
   imports: [DatabaseModule, UsersModule, TeamsModule],
@@ -16,6 +17,7 @@ import { usersProviders } from 'src/provider/users.providers';
     ...nftProviders,
     ...usersProviders,
     ...teamsProviders,
+    ...collectionProviders
   ],
 })
 export class NftModule {}

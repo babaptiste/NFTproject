@@ -36,4 +36,18 @@ export class UsersService {
             }
         });
     }
+
+    async addRole(UpdateRoleDto): Promise<User> {
+        await this.usersRepository.update({ roles: UpdateRoleDto.roles },
+            {
+                where: {
+                    email: UpdateRoleDto.email
+                }
+            });
+        return this.usersRepository.findOne({
+            where: {
+                email: UpdateRoleDto.email
+            }
+        });
+    }
 }

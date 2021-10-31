@@ -20,4 +20,6 @@ export class Collection extends Model {
   @Column
   rating: string;
 
+  @Column
+  numberOfSales: number;
 }

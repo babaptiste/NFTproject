@@ -3,6 +3,7 @@ import { Nft } from "src/entity/nft.entity";
 import { UpdateNftDto } from 'src/dto/update-nft-dto'
 import { Team } from "src/entity/team.entity";
 import { User } from "src/entity/user.entity";
+import { Collection } from "src/entity/collection.entity";
 
 @Injectable()
 export class NftService {
@@ -12,7 +13,9 @@ export class NftService {
         @Inject('TEAMS_REPOSITORY')
         private teamsRepository: typeof Team,
         @Inject('USERS_REPOSITORY')
-        private usersRepository: typeof User
+        private usersRepository: typeof User,
+        @Inject('COLLECTION_REPOSITORY')
+        private collectionRepository: typeof Collection
       ) {}
 
     async register(createNftDto): Promise<Nft> {
@@ -50,6 +53,8 @@ export class NftService {
     async updateOwners(updateNftDto): Promise<Nft> {
         const foundItem = await this.nftsRepository.findOne({ where: { id: updateNftDto.id } })
         var newhistory = foundItem.history
+        if (newhistory == null)
+            newhistory = []
         newhistory.push(updateNftDto.owner)
         await this.nftsRepository.update({ history: newhistory }, { where: { id: updateNftDto.id } })
         return this.nftsRepository.findOne({
@@ -74,12 +79,18 @@ export class NftService {
     }
 
     async findMostRated(): Promise<Nft> {
-        return this.nftsRepository.findOne();
+        var l = await this.nftsRepository.findAll<Nft>();
+
+        l.sort(function (a, b) {
+            return a.rating - b.rating;
+        })
+
+        return l[l.length - 1]
     }
 
     async sellNft(sellNftDto): Promise<Nft> {
 
-        /* Find first owner team and Update balance*/
+        /* Find first owner team and Update balance and update number of sales in team + collection*/
         var nft = await this.nftsRepository.findOne({ where: { id: sellNftDto.id } })
         var oldUser = await this.usersRepository.findOne({
             where: {
@@ -93,13 +104,35 @@ export class NftService {
             }
         })
 
-        var newBalance = (await oldTeam).balance + nft.price
+        var collection = this.collectionRepository.findOne({
+            where: {
+                name: nft.belongToCollection
+            }
+        })
 
-        await this.teamsRepository.update({ balance: newBalance },
+
+
+        var newBalance = (await oldTeam).balance
+        newBalance === null ? 1 : newBalance + nft.price
+        
+        var newSalesnumber = (await oldTeam).numberOfSales
+        newSalesnumber === null ? 1 : newSalesnumber + 1
+
+        await this.teamsRepository.update({ balance: newBalance, numberOfSales: newSalesnumber},
         {
           where: {
               id: oldUser.teamId
           }
+        });
+        
+        var newSalesCollection = (await collection).numberOfSales
+        newSalesCollection === null ? 1 : newSalesCollection + 1
+        
+        await this.collectionRepository.update({ numberOfSales: newSalesCollection},
+        {
+            where: {
+                id: (await collection).id
+            }
         });
 
         /* Update nft owner*/
