@@ -31,9 +31,34 @@
 ```bash
 $ npm install
 ```
+
 ## Setup the DB postgreSQL
 
-Go to PgAdmin and create a DB named ```JS```.
+Go to PgAdmin and create a DB named `JS`.
+
+## In case of postgreSQL issue
+
+1. Go into the pg_hba.conf (Program Files/PostgreSQL/_version number_/data)and replace your current config at the bottom of the file by this one :
+
+```
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# "local" is for Unix domain socket connections only
+local   all             all                                     trust
+# IPv4 local connections:
+host    all             all             127.0.0.1/32            trust
+# IPv6 local connections:
+host    all             all             ::1/128                 trust
+# Allow replication connections from localhost, by a user with the
+# replication privilege.
+local   replication     all                                     trust
+host    replication     all             127.0.0.1/32            trust
+host    replication     all             ::1/128                 trust
+```
+
+2. If a bug still persists, create a user named after the error message and grant him every rights
+
+3. Restart postgresSQL service and it should run just fine
 
 ## Running the app
 
