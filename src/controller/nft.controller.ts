@@ -45,4 +45,16 @@ constructor(private nftService: NftService) {}
   findMostRated(): Promise<Nft>{
     return this.nftService.findMostRated();
   }
+
+  @ApiParam({name: 'number', required: true, description: 'Last number sells'})
+  @Get('/last/:number')
+  getLastSells(@Param() params) : Promise<Nft[]>{
+      return this.nftService.getLastSells(params.number);
+  }
+
+  @ApiParam({name: 'owner', required: true, description: 'Owner name'})
+  @Get('/:owner')
+  getOwner(@Param() params) : Promise<Nft[]>{
+      return this.nftService.getOwner(params.owner);
+  }
 }
