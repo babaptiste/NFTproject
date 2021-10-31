@@ -1,5 +1,8 @@
 Choix des technologies:
 
+NestJS : Framework efficace pour créer une API (comporte des fonctionnalités déjà implémentées) + on l'a expérimenté en cours.
 postgresql : Base de donnée que l'on connais, relationnelle donc adaptée à ce qui était demandé.
-Sequelize : Simplicité d'utilisation, compatible avec postgreSQL
-JWT
+Sequelize : ORM avec une simplicité d'utilisation, compatible avec postgreSQL.
+Passport + JWT : Bibliothèque d'authentification node.js la plus populaire et conseillé par NestJS.
+Swagger/OpenAPI : Langage de description d'interface pour décrire les API REST la + populaire.
+Logger : Fonctionnalité pour le logging de NestJS facile d'utilisation.
