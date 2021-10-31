@@ -8,14 +8,17 @@ export class TeamsService {
     private teamsRepository: typeof Team
   ) {}
 
+  // Get all teams.
   async findAll(): Promise<Team[]> {
     return this.teamsRepository.findAll<Team>();
   }
 
+  // Create a team.
   async createTeam(name): Promise<Team> {
     return this.teamsRepository.create({ name: name });
   }
 
+  // Update balance
   async updateBalance(id, balance) : Promise<Team> {
     await this.teamsRepository.update({ balance: balance },
       {
@@ -30,6 +33,7 @@ export class TeamsService {
     });
   }
 
+  // Get best seller team.
   async findBestSeller(): Promise<Team> {
     var l = await this.teamsRepository.findAll<Team>();
 

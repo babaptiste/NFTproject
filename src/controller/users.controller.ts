@@ -13,23 +13,27 @@ import { UsersService } from 'src/service/users.service';
 export class UsersController {
 constructor(private userService: UsersService) {}
   @Post()
+  // Post request to create a user.
   register(@Body() createUserDto: CreateUserDto) : Promise<User>{
     return this.userService.register(createUserDto);
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
+  // Get request for all users.
   findAll() : Promise<User[]>{
     return this.userService.findAll();
   }
 
   @Put('/team')
   @UseGuards(JwtAuthGuard)
+  // Put request to add a team member.
   addMember(@Body() updateUserDto: UpdateUserDto) : Promise<User>{
       return this.userService.addMember(updateUserDto);
   }
 
   @Put('/role')
+  // Put request to add a role.
   addRole(@Body() updateRoleDto: UpdateRoleDto): Promise<User>{
     return this.userService.addRole(updateRoleDto);
   }
